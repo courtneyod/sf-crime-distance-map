@@ -1,5 +1,8 @@
 "use strict"
 
+var hashTable = require("./hash_table.js");
+var intersectionsObject = {};
+
 
 function GraphEdge(first, second, weight) {
   this.first = first;
@@ -7,8 +10,10 @@ function GraphEdge(first, second, weight) {
   this.weight = weight;
 }
 
-function GraphNode(value) {
-  this.value = value;
+function GraphNode(intersection1, intersection2, cnn) {
+  this.intersection1 = intersection1;
+  this.intersection2 = intersection2;
+  this.cnn = cnn;
 }
 
 //This represents an undirected Graph
@@ -18,21 +23,23 @@ function Graph() {
   this.edges = [];
 
   // Helper function to find a node in nodes
-  this.findNode = function (value) {
-    for (let i = 0; i < this.nodes.length; i++) {
-      if (this.nodes[i].value == value) {
-        return this.nodes[i];
-      }
-    }
-    return null;
-  }
-
-  // Add a node to the list of nodes
-  this.addNode = function(value) {
-    if (this.findNode(value) != null) {
+  this.findNode = function (value, intersection1, intersection2) {
+    if(intersectionsObject[value]){
+      return true;
+    } else {
+      intersectionsObject[value] = [intersection1, intersection2];
       return;
     }
-    this.nodes.push(new GraphNode(value));
+  };
+
+  // Add a node to the list of nodes
+  this.addNode = function(intersection1, intersection2, cnn) {
+    // console.log("BEGIN")
+    if (this.findNode(cnn) === true) {
+      // console.log("WE ARE INSIDE");
+      return;
+    }
+    this.nodes.push(new GraphNode(intersection1, intersection2, cnn));
   }
 
   // Add an edge between 2 nodes and give it a weight
@@ -168,4 +175,3 @@ function Graph() {
 
 
 module.exports = Graph;
-}
