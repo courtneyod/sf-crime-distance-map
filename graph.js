@@ -1,12 +1,13 @@
 "use strict"
 
+var cnnObject = {};
 var intersectionsObject = {};
 
-
-function GraphEdge(first, second, weight) {
+function GraphEdge(first, second, weight, crimeType) {
   this.first = first;
   this.second = second;
   this.weight = weight;
+  this.crimeType = [];
 }
 
 
@@ -27,8 +28,8 @@ function Graph() {
   // Helper function to find a node in nodes
 
   this.findNode = function (value) {
-    if(intersectionsObject[value]){
-      return intersectionsObject[value];
+    if(cnnObject[value]){
+      return cnnObject[value];
     } else {
       return;
     }
@@ -42,7 +43,8 @@ function Graph() {
     }
 
     var newNode = new GraphNode(intersection1, intersection2, cnn, latLng);
-    intersectionsObject[cnn] = newNode;
+    cnnObject[cnn] = newNode;
+    intersectionsObject[intersection1] = cnn;
 
     this.nodes.push(newNode);
     // console.log("THIS IS LATLNG " + latLng)
@@ -61,13 +63,17 @@ function Graph() {
     this.edges.push(newEdge);
     first.streetEdges.push(newEdge);
     second.streetEdges.push(newEdge);
-    // console.log(intersectionsObject, ' this is the intersectionsObject in the add edge method')
+    // console.log(cnnObject, ' this is the cnnObject in the add edge method')
   };
 
   //Return insertion obj
+  this.getCnnObject = function(){
+      // console.log(cnnObject, ' this is the cnnObject in the method')
+      return cnnObject;
+  }
+
   this.getIntersectionsObject = function(){
-      // console.log(intersectionsObject, ' this is the intersectionsObject in the method')
-      return intersectionsObject;
+    return intersectionsObject;
   }
 
   // Get the size of the graph by returning how many nodes are in the graph

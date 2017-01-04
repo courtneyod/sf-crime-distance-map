@@ -1,4 +1,4 @@
-var streetNode = require("./streetData.json");
+var streetNode = require("./json/streetData.json");
 var fs = require("fs");
 var graph = require("./graph.js");
 var streetData = streetNode.data;
@@ -39,21 +39,36 @@ var streetGraph = createStreetNode(streetData);
 // createStreetEdges(streetData);
 
 //grab the instersection object and store in a variable
-var jsonGraph = streetGraph.getIntersectionsObject();
-// console.log(jsonGraph, ' this is the json graph')
+var cnnGraph = streetGraph.getCnnObject();
+var intersectionsGraph = streetGraph.getIntersectionsObject();
+// console.log(cnnGraph, ' this is the json graph')
 
 // write to the json file and add the instersection object
-storeNodes(jsonGraph);
-function storeNodes(json){
+storeCnnObject(cnnGraph);
+storeIntersectionObject(intersectionsGraph);
+
+function storeCnnObject(json){
     var str = JSON.stringify(json);
     // console.log(str, ' this is the json str')
-    fs.writeFile("./streetNodes.json", str, function(err) {
+    fs.writeFile("./json/cnnObject.json", str, function(err) {
     if(err) {
         return console.log(err);
     }
         console.log("The file was saved!");
     });
 }
+
+function storeIntersectionObject(json){
+    var str = JSON.stringify(json);
+
+    fs.writeFile("./json/intersectionsObject.json", str, function(err){
+      if(err) {
+        return console.log(err);
+      }
+      console.log("The file was saved!");
+    });
+}
+
 
 // function createStreetEdges(data){
 //   for(var i = 0; i < data.length; i++){

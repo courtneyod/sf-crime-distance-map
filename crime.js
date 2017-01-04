@@ -1,4 +1,4 @@
-var crimeData = require("./crime.json");
+var crimeData = require("./json/cleanCrimeData.json");
 var streetGraph = require("./streetNode.js");
 
 var incidents = {};
