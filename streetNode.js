@@ -75,16 +75,4 @@ function convertIntersectionLatLng(firstStreet, secondStreet){
   return p;
 }
 
-
-
-
-
-//
-//
-// console.log(streetData.length);
-// console.log(streetData[1511].length);
-// console.log(typeof streetData[0]);
-// // var test = JSON.parse(streetData[0]);
-
-
-// console.log(test);
+module.exports = streetGraph;

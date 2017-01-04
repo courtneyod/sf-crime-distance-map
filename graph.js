@@ -1,6 +1,7 @@
 "use strict"
 
 var hashTable = require("./hash_table.js");
+var fs = require('fs');
 var intersectionsObject = {};
 
 
@@ -17,7 +18,7 @@ function GraphNode(intersection1, intersection2, cnn, latLng, streetEdges) {
   this.cnn = cnn;
   this.latLng = latLng
   this.streetEdges = streetEdges || [];
-
+}
 
 //This represents an undirected Graph
 function Graph() {
@@ -44,6 +45,9 @@ function Graph() {
 
     var newNode = new GraphNode(intersection1, intersection2, cnn, latLng);
     intersectionsObject[cnn] = newNode;
+    fs.appendFile('streetNodes.json', 'data to append', function (err) {
+
+});
     this.nodes.push(newNode);
     console.log("THIS IS LATLNG " + latLng)
     console.log(newNode.latLng);
@@ -53,7 +57,7 @@ function Graph() {
   // Add an edge between 2 nodes and give it a weight
   this.addEdge = function(source, destination, weight = 1) {
     let first = this.findNode(source);
-	let second = this.findNode(destination);
+	  let second = this.findNode(destination);
     if (first == null || second == null) {
       return;
     }
@@ -185,4 +189,4 @@ function Graph() {
  }
 
 
-module.exports = Graph;
+module.exports = Graph
