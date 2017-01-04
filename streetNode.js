@@ -10,7 +10,7 @@ var request = require('request');
 function createStreetNode(data) {
   var streetGraph = new graph();
 
-  for(var i = 0; i < 10; i++){
+  for(var i = 0; i < data.length; i++){
 
     var cnn;
     var intersection1 = [];
@@ -50,7 +50,7 @@ function storeNodes(json){
 }
 
 function createStreetEdges(data){
-  for(var i = 0; i < 10; i++){
+  for(var i = 0; i < data.length; i++){
     if(data[i][21] && data[i][22]){
       streetGraph.addEdge(data[i][21], data[i][22]);
     }

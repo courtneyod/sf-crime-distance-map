@@ -57,7 +57,7 @@ function Graph() {
     if (first == null || second == null) {
       return;
     }
-    var newEdge = new GraphEdge(first, second, weight)
+    var newEdge = new GraphEdge(source, destination, weight)
     this.edges.push(newEdge);
     first.streetEdges.push(newEdge);
     second.streetEdges.push(newEdge);
