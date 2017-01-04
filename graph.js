@@ -1,7 +1,5 @@
 "use strict"
 
-var hashTable = require("./hash_table.js");
-var fs = require('fs');
 var intersectionsObject = {};
 
 
@@ -45,9 +43,7 @@ function Graph() {
 
     var newNode = new GraphNode(intersection1, intersection2, cnn, latLng);
     intersectionsObject[cnn] = newNode;
-    fs.appendFile('streetNodes.json', 'data to append', function (err) {
 
-});
     this.nodes.push(newNode);
     console.log("THIS IS LATLNG " + latLng)
     console.log(newNode.latLng);
@@ -65,7 +61,14 @@ function Graph() {
     this.edges.push(newEdge);
     first.streetEdges.push(newEdge);
     second.streetEdges.push(newEdge);
+    console.log(intersectionsObject, ' this is the intersectionsObject in the add edge method')
   };
+
+  //Return insertion obj
+  this.getIntersectionsObject = function(){
+      console.log(intersectionsObject, ' this is the intersectionsObject in the method')
+      return intersectionsObject;
+  }
 
   // Get the size of the graph by returning how many nodes are in the graph
   this.size = function() {

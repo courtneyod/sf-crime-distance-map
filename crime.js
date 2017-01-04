@@ -3,7 +3,7 @@ var streetGraph = require("./streetNode.js");
 
 var incidents = {};
 
-console.log(crimeData.data[0][17]);
+
 
 function crimeParser(crimeData){
   for(var i = 0; i < 10; i++){
