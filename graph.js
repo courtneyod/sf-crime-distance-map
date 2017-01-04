@@ -2,13 +2,12 @@
 
 var intersectionsObject = {};
 
-
-function GraphEdge(first, second, weight) {
+function GraphEdge(first, second, weight, crimeType) {
   this.first = first;
   this.second = second;
   this.weight = weight;
+  this.crimeType = [];
 }
-
 
 function GraphNode(intersection1, intersection2, cnn, latLng, streetEdges) {
   this.intersection1 = intersection1;
