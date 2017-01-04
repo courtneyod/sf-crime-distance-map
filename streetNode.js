@@ -8,13 +8,14 @@ var streetData = streetNode.data;
 var request = require('request');
 
 function createStreetNode(data) {
+  console.log(new Date(), "this is the start.")
   var streetGraph = new graph();
 
   for(var i = 0; i < data.length; i++){
-
     var cnn;
     var intersection1 = [];
     var intersection2 = [];
+
     if(!(data[i][21]) && !(data[i][22])){
       cnn = data[i][8];
       intersection1.push(data[i][9]);
@@ -23,14 +24,19 @@ function createStreetNode(data) {
       intersection2.push(data[i][9]);
       streetGraph.addNode(intersection1, intersection2, cnn);
     }
+
+    if(data[i][21] && data[i][22]){
+      streetGraph.addEdge(data[i][21], data[i][22]);
+    }
   }
+  console.log(new Date(), "this is the end.");
   return streetGraph;
 }
 
 
 var streetGraph = createStreetNode(streetData);
 
-createStreetEdges(streetData);
+// createStreetEdges(streetData);
 
 //grab the instersection object and store in a variable
 var jsonGraph = streetGraph.getIntersectionsObject();
@@ -40,7 +46,7 @@ var jsonGraph = streetGraph.getIntersectionsObject();
 storeNodes(jsonGraph);
 function storeNodes(json){
     var str = JSON.stringify(json);
-    console.log(str, ' this is the json str')
+    // console.log(str, ' this is the json str')
     fs.writeFile("./streetNodes.json", str, function(err) {
     if(err) {
         return console.log(err);
@@ -49,13 +55,11 @@ function storeNodes(json){
     });
 }
 
-function createStreetEdges(data){
-  for(var i = 0; i < data.length; i++){
-    if(data[i][21] && data[i][22]){
-      streetGraph.addEdge(data[i][21], data[i][22]);
-    }
-  }
-}
+// function createStreetEdges(data){
+//   for(var i = 0; i < data.length; i++){
+//
+//   }
+// }
 
 module.exports = streetGraph;
 

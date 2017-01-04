@@ -45,8 +45,8 @@ function Graph() {
     intersectionsObject[cnn] = newNode;
 
     this.nodes.push(newNode);
-    console.log("THIS IS LATLNG " + latLng)
-    console.log(newNode.latLng);
+    // console.log("THIS IS LATLNG " + latLng)
+    // console.log(newNode.latLng);
     }
 
 
@@ -61,12 +61,12 @@ function Graph() {
     this.edges.push(newEdge);
     first.streetEdges.push(newEdge);
     second.streetEdges.push(newEdge);
-    console.log(intersectionsObject, ' this is the intersectionsObject in the add edge method')
+    // console.log(intersectionsObject, ' this is the intersectionsObject in the add edge method')
   };
 
   //Return insertion obj
   this.getIntersectionsObject = function(){
-      console.log(intersectionsObject, ' this is the intersectionsObject in the method')
+      // console.log(intersectionsObject, ' this is the intersectionsObject in the method')
       return intersectionsObject;
   }
 
