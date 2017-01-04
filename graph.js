@@ -10,10 +10,12 @@ function GraphEdge(first, second, weight) {
   this.weight = weight;
 }
 
-function GraphNode(intersection1, intersection2, cnn) {
+function GraphNode(intersection1, intersection2, cnn, latLng, streetEdges) {
   this.intersection1 = intersection1;
   this.intersection2 = intersection2;
   this.cnn = cnn;
+  this.latLng = latLng
+  this.streetEdges = streetEdges || [];
 }
 
 //This represents an undirected Graph
@@ -23,34 +25,39 @@ function Graph() {
   this.edges = [];
 
   // Helper function to find a node in nodes
-  this.findNode = function (value, intersection1, intersection2) {
+  this.findNode = function (value) {
     if(intersectionsObject[value]){
-      return true;
+      return intersectionsObject[value];
     } else {
-      intersectionsObject[value] = [intersection1, intersection2];
       return;
     }
   };
 
   // Add a node to the list of nodes
-  this.addNode = function(intersection1, intersection2, cnn) {
-    // console.log("BEGIN")
-    if (this.findNode(cnn) === true) {
-      // console.log("WE ARE INSIDE");
+  this.addNode = function(intersection1, intersection2, cnn, latLng) {
+    if (this.findNode(cnn)) {
       return;
     }
-    this.nodes.push(new GraphNode(intersection1, intersection2, cnn));
-  }
+
+    var newNode = new GraphNode(intersection1, intersection2, cnn, latLng);
+    intersectionsObject[cnn] = newNode;
+    this.nodes.push(newNode);
+    console.log("THIS IS LATLNG " + latLng)
+    console.log(newNode.latLng);
+    }
 
   // Add an edge between 2 nodes and give it a weight
-  this.addEdge = function(source, destination, weight) {
+  this.addEdge = function(source, destination, weight = 1) {
     let first = this.findNode(source);
     let second = this.findNode(destination);
     if (first == null || second == null) {
       return;
     }
-    this.edges.push(new GraphEdge(first, second, weight));
-  }
+    var newEdge = new GraphEdge(first, second, weight)
+    this.edges.push(newEdge);
+    first.streetEdges.push(newEdge);
+    second.streetEdges.push(newEdge);
+  };
 
   // Get the size of the graph by returning how many nodes are in the graph
   this.size = function() {
