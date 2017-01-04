@@ -1,4 +1,4 @@
-var streetNode = require("./json/streetData.json");
+var streetNode = require("./json/streetDataSource.json");
 var fs = require("fs");
 var graph = require("./graph.js");
 var streetData = streetNode.data;
