@@ -1,1 +1,16 @@
-{}
+{"24530000":
+	{"intersection1":["01ST ST","ELIM ALY"],"intersection2":["ELIM ALY","01ST ST"],"cnn":"24530000","streetEdges":[{"first":"24564000","second":"24530000","weight":1},{"first":"24530000","second":"24563000","weight":1}]
+},
+"24563000":
+	{"intersection1":["01ST ST","MISSION ST"],"intersection2":["MISSION ST","01ST ST"],"cnn":"24563000","streetEdges":[{"first":"24530000","second":"24563000","weight":1}]
+},
+"24564000":
+	{"intersection1":["01ST ST","JESSIE ST"],"intersection2":["JESSIE ST","01ST ST"],"cnn":"24564000","streetEdges":[{"first":"24666000","second":"24564000","weight":1},{"first":"24564000","second":"24530000","weight":1}]
+},
+"24666000":
+	{"intersection1":["01ST ST","STEVENSON ST"],"intersection2":["STEVENSON ST","01ST ST"],"cnn":"24666000","streetEdges":[{"first":"30731000","second":"24666000","weight":1},{"first":"24666000","second":"24564000","weight":1}]
+},
+"30731000":
+	{"intersection1":["01ST ST","BUSH ST \\ MARKET ST"],"intersection2":["BUSH ST \\ MARKET ST","01ST ST"],"cnn":"30731000","streetEdges":[{"first":"30731000","second":"24666000","weight":1}]
+}
+}
