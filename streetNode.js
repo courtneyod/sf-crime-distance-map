@@ -3,6 +3,7 @@ var fs = require("fs");
 var graph = require("./graph.js");
 var hashTable = require("./hash_table.js");
 var streetData = streetNode.data;
+
 var streetGraph;
 // const __apiKey__ = AIzaSyC9FPqo6Pdx4VjALRx5oeEDhfQvb-fkDjE
 var request = require('request');
@@ -11,6 +12,7 @@ function createStreetNode(data) {
   streetGraph = new graph();
 
   for(var i = 0; i < 3; i++){
+
     var cnn;
     var intersection1 = [];
     var intersection2 = [];
@@ -83,5 +85,6 @@ function convertIntersectionLatLng(firstStreet, secondStreet){
 // console.log(streetData[1511].length);
 // console.log(typeof streetData[0]);
 // // var test = JSON.parse(streetData[0]);
+
 
 // console.log(test);

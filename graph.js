@@ -10,13 +10,14 @@ function GraphEdge(first, second, weight) {
   this.weight = weight;
 }
 
+
 function GraphNode(intersection1, intersection2, cnn, latLng, streetEdges) {
   this.intersection1 = intersection1;
   this.intersection2 = intersection2;
   this.cnn = cnn;
   this.latLng = latLng
   this.streetEdges = streetEdges || [];
-}
+
 
 //This represents an undirected Graph
 function Graph() {
@@ -25,6 +26,7 @@ function Graph() {
   this.edges = [];
 
   // Helper function to find a node in nodes
+
   this.findNode = function (value) {
     if(intersectionsObject[value]){
       return intersectionsObject[value];
@@ -34,6 +36,7 @@ function Graph() {
   };
 
   // Add a node to the list of nodes
+
   this.addNode = function(intersection1, intersection2, cnn, latLng) {
     if (this.findNode(cnn)) {
       return;
@@ -46,10 +49,11 @@ function Graph() {
     console.log(newNode.latLng);
     }
 
+
   // Add an edge between 2 nodes and give it a weight
   this.addEdge = function(source, destination, weight = 1) {
     let first = this.findNode(source);
-    let second = this.findNode(destination);
+	let second = this.findNode(destination);
     if (first == null || second == null) {
       return;
     }
