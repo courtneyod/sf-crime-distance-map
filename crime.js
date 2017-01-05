@@ -5,6 +5,45 @@ var cnnObject = require("./json/cnnObject.json");
 var graph = require("./graph.js");
 
 var incidents = {};
+var crimeTypes = [];
+var crimeValues = {
+  'ASSAULT': 4,
+  'MISSING PERSON': 2,
+  'ROBBERY': 4,
+  'ARSON': 1,
+  'VEHICLE THEFT': 2,
+  'LARCENY/THEFT': 3,
+  'WARRANTS': 1,
+  'RUNAWAY': 0,
+  'BURGLARY': 1,
+  'TRESPASS': 1,
+  'VANDALISM': 1,
+  'DRUG/NARCOTIC': 2,
+  'STOLEN PROPERTY': 1,
+  'FRAUD': 0,
+  'KIDNAPPING': 5,
+  'DRUNKENNESS': 1,
+  'DRIVING UNDER THE INFLUENCE': 1,
+  'SEX OFFENSES:, FORCIBLE': 5,
+  'FORGERY/COUNTERFEITING': 0,
+  'PROSTITUTION': 1,
+  'SECONDARY CODES': 1,
+  'WEAPON LAWS': 3,
+  'DISORDERLY CONDUCT': 1,
+  'SUICIDE': 0,
+  'FAMILY OFFENSES': 1,
+  'RECOVERED VEHICLE': 0,
+  'EXTORTION': 0,
+  'LIQUOR LAWS': 0,
+  'LOITERING': 0,
+  'EMBEZZLEMENT': 0,
+  'GAMBLING': 0,
+  'BRIBERY': 0,
+  'SEX OFFENSES:, NON FORCIBLE': 1,
+  'PORNOGRAPHY/OBSCENE MAT': 1,
+  'BAD CHECKS': 0,
+  'TREA': 0
+}
 // var intersectionsObject = JSON.parse(intersectionsObjectJSON);
 // var cnnObject = JSON.parse(cnnObjectJSON);
 
@@ -38,18 +77,48 @@ function crimeParser(crimeData){
         cnn = intersectionsObject[keyOption2];
       }
       var graphNode = cnnObject[cnn];
-      console.log(keyOption1, " kopt1", keyOption2, " kopt2", cnn, " cnn", graphNode, " graphNode");
+      var crimeType = crimeIncident[9];
+      addCrimeToEdges(graphNode, crimeType)
+    //   console.log(keyOption1, " kopt1", keyOption2, " kopt2", cnn, " cnn", graphNode, " graphNode", crimeIncident[9], 'crimeIncident');
     }
 
 
-    var crimeType = crimeIncident[9];
-    console.log(incidentAddress, "address", " INTERSECTION1", intersection2, " INTERSECTION2");
+    // var crimeType = crimeIncident[9];
+    // console.log(incidentAddress, "address", " INTERSECTION1", intersection2, " INTERSECTION2");
   }
   }
 
+function addCrimeToEdges(node, crime){
+    var crimeValue = crimeValues[crime];
+    for (var i = 0; i < node.streetEdges.length; i++) {
+        node.streetEdges[i].weight += crimeValue;
+
+        if(node.streetEdges[i].crimeType[crime]){
+            node.streetEdges[i].crimeType[crime] += 1;
+        } else {
+            node.streetEdges[i].crimeType[crime] = 1;
+        }
+        console.log(node, 'node should have edges with crime data');
+    }
+}
+
+// function showCrimeTypes(){
+//   for(var i = 0; i < crimeData.data.length; i++){
+//     var crimeIncident = crimeData.data[i];
+//     var crimeType = crimeIncident[9];
+//     if(crimeTypes.indexOf(crimeType) === -1){
+//       crimeTypes.push(crimeType);
+//     }
+//   }
+//   return console.log(crimeTypes, "THESE ARE THE TYPES OF CRIMES IN OUR DATASET");
+// }
+
+// showCrimeTypes();
 
 
-console.log(crimeData.data[0][16])
+
+
+// console.log(crimeData.data[0][16])
 crimeParser(crimeData);
 
 
