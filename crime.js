@@ -38,14 +38,30 @@ function crimeParser(crimeData){
         cnn = intersectionsObject[keyOption2];
       }
       var graphNode = cnnObject[cnn];
-      console.log(keyOption1, " kopt1", keyOption2, " kopt2", cnn, " cnn", graphNode, " graphNode");
+      var crimeType = crimeIncident[9];
+      addCrimeToEdges(graphNode, crimeType)
+    //   console.log(keyOption1, " kopt1", keyOption2, " kopt2", cnn, " cnn", graphNode, " graphNode", crimeIncident[9], 'crimeIncident');
     }
 
 
-    var crimeType = crimeIncident[9];
-    console.log(incidentAddress, "address", " INTERSECTION1", intersection2, " INTERSECTION2");
+    // var crimeType = crimeIncident[9];
+    // console.log(incidentAddress, "address", " INTERSECTION1", intersection2, " INTERSECTION2");
   }
   }
+
+function addCrimeToEdges(node, crime){
+
+    for (var i = 0; i < node.streetEdges.length; i++) {
+        var first = node.streetEdges[i].weight += 1
+        if(node.streetEdges[i].crimeType[crime]){
+            node.streetEdges[i].crimeType[crime] += 1
+        } else {
+            node.streetEdges[i].crimeType[crime] = 1
+        }
+        console.log(node, 'node should have edges with crime data')
+    }
+}
+
 
 
 
