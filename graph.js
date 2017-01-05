@@ -7,7 +7,7 @@ function GraphEdge(first, second, weight, crimeType) {
   this.first = first;
   this.second = second;
   this.weight = weight;
-  this.crimeType = [];
+  this.crimeType = {};
 }
 
 
