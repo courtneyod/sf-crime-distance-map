@@ -8,7 +8,7 @@ var streetData = streetNode.data;
 var request = require('request');
 
 function createStreetNode(data) {
-  console.log(new Date(), "this is the start.")
+  // console.log(new Date(), "this is the start.")
   var streetGraph = new graph();
 
   for(var i = 0; i < data.length; i++){
@@ -29,7 +29,7 @@ function createStreetNode(data) {
       streetGraph.addEdge(data[i][21], data[i][22]);
     }
   }
-  console.log(new Date(), "this is the end.");
+  // console.log(new Date(), "this is the end.");
   return streetGraph;
 }
 
@@ -54,7 +54,7 @@ function storeCnnObject(json){
     if(err) {
         return console.log(err);
     }
-        console.log("The file was saved!");
+        console.log("The CNN Object was saved!");
     });
 }
 
@@ -65,7 +65,7 @@ function storeIntersectionObject(json){
       if(err) {
         return console.log(err);
       }
-      console.log("The file was saved!");
+      console.log("The Intersection Object was saved!");
     });
 }
 
