@@ -1,5 +1,6 @@
 var crimeData = require("./json/cleanCrimeData.json");
 // var streetGraph = require("./streetNode.js");
+var fs = require("fs");
 var intersectionsObject = require("./json/intersectionsObject.json");
 var cnnObject = require("./json/cnnObject.json");
 var graph = require("./graph.js");
@@ -24,7 +25,7 @@ var crimeValues = {
   'KIDNAPPING': 5,
   'DRUNKENNESS': 1,
   'DRIVING UNDER THE INFLUENCE': 1,
-  'SEX OFFENSES:, FORCIBLE': 5,
+  'SEX OFFENSES, FORCIBLE': 5,
   'FORGERY/COUNTERFEITING': 0,
   'PROSTITUTION': 1,
   'SECONDARY CODES': 1,
@@ -39,7 +40,7 @@ var crimeValues = {
   'EMBEZZLEMENT': 0,
   'GAMBLING': 0,
   'BRIBERY': 0,
-  'SEX OFFENSES:, NON FORCIBLE': 1,
+  'SEX OFFENSES, NON FORCIBLE': 1,
   'PORNOGRAPHY/OBSCENE MAT': 1,
   'BAD CHECKS': 0,
   'TREA': 0
@@ -48,7 +49,7 @@ var crimeValues = {
 // var cnnObject = JSON.parse(cnnObjectJSON);
 
 function crimeParser(crimeData){
-  for(var i = 0; i < 50; i++){
+  for(var i = 0; i < crimeData.data.length; i++){
     var crimeIncident = crimeData.data[i];
     // console.log(crimeData.data[i])
     // console.log(crimeIncident, " crime incident")
@@ -91,15 +92,29 @@ function crimeParser(crimeData){
 function addCrimeToEdges(node, crime){
     var crimeValue = crimeValues[crime];
     for (var i = 0; i < node.streetEdges.length; i++) {
-        node.streetEdges[i].weight += crimeValue;
-
+        node.streetEdges[i].weight = node.streetEdges[i].weight + crimeValue;
+        if(!(node.streetEdges[i].weight)) console.log(node, "THIS IS THE NODE THAT IS NULL");
         if(node.streetEdges[i].crimeType[crime]){
             node.streetEdges[i].crimeType[crime] += 1;
         } else {
             node.streetEdges[i].crimeType[crime] = 1;
         }
-        console.log(node, 'node should have edges with crime data');
+        // console.log(node, 'node should have edges with crime data');
     }
+}
+crimeParser(crimeData);
+
+storeCnnObjectWithCrime(cnnObject)
+
+function storeCnnObjectWithCrime(json){
+    var str = JSON.stringify(json);
+    // console.log(str, ' this is the json str')
+    fs.writeFile("./json/cnnObjectWithCrime.json", str, function(err) {
+    if(err) {
+        return console.log(err);
+    }
+        console.log("The file was saved!");
+    });
 }
 
 // function showCrimeTypes(){
@@ -119,7 +134,7 @@ function addCrimeToEdges(node, crime){
 
 
 // console.log(crimeData.data[0][16])
-crimeParser(crimeData);
+
 
 
 // "01ST ST,STEVENSON ST"
