@@ -9,7 +9,7 @@ var incidents = {};
 var crimeTypes = [];
 var crimeValues = {
   'ASSAULT': 4,
-  'MISSING PERSON': 2,
+  'MISSING PERSON': 4,
   'ROBBERY': 4,
   'ARSON': 1,
   'VEHICLE THEFT': 2,

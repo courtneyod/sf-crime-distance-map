@@ -10,11 +10,11 @@
 // }]}
 
 function bubbleSort(arr){
-    // console.log(arr, 'this is the arr before sort')
     if(arr.length === 1){
         return arr;
     }
     for(let i = 0; i < arr.length-1; i ++){
+        // console.log(arr[i], 'this is the arr before sort')
         for(let j = 0; j < arr.length-1-i; j++){
             var one = arr[j].cost
             var two = arr[j+1].cost
@@ -35,10 +35,11 @@ function PriorityQueue(){
     this.length = 0;
 }
 
-PriorityQueue.prototype.enqueue = function (obj) {
-    // console.log(obj, 'push')
-    this.pQueue.push(obj);
+PriorityQueue.prototype.enqueue = function (objeeee, cost) {
+    var holder = {objeeee, cost}
+    this.pQueue.push(holder);
     if(this.pQueue.length > 1){
+        // console.log('push isi hereheheheherhreeh', this.pQueue, 'push isi hereheheheherhreeh')
         this.pQueue = bubbleSort(this.pQueue)
     }
     this.length ++;
