@@ -90,6 +90,7 @@ function crimeParser(crimeData){
   }
 
 function addCrimeToEdges(node, crime){
+
     var crimeValue = crimeValues[crime];
     for (var i = 0; i < node.streetEdges.length; i++) {
         node.streetEdges[i].weight = node.streetEdges[i].weight + crimeValue;

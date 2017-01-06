@@ -27,10 +27,16 @@ function userInput (origin, destination){
 		console.log("this is the error from trying to get the destinationLatLng " + err)
 	})
 }
+<<<<<<< HEAD
 userInput(("PIERCE ST,CAPRA WAY"), ("FRANCISCO ST,BAKER ST"));
 //"BAY ST,SCOTT ST":"26990000"
 // "FRANCISCO ST,BAKER ST":"27005000"
 // "26982000":"PIERCE ST,CAPRA WAY"
+=======
+userInput(("BAY ST,SCOTT ST"), ("FRANCISCO ST,BAKER ST"));
+//"BAY ST,SCOTT ST":"26990000"
+// "FRANCISCO ST,BAKER ST":"27005000"
+>>>>>>> a575194994225405bac77e2416a3b60752c05449
 //========================A STAR SEARCH=======================================================
 async function dijkstraSearch(sourceNode, destinationNode, destinationLatLng, destinationCNN) {
 	let frontier = new PriorityQueue(); // We're assuming such a class exists.
@@ -49,7 +55,10 @@ async function dijkstraSearch(sourceNode, destinationNode, destinationLatLng, de
 		let curCost = currentQueueObj['objeeee']['cost'];
 		//console.log(curNode['cnn'], 'is this the erro? ')
 		let curCnn = curNode.cnn;
+<<<<<<< HEAD
 		console.log(curNode, 'this is the node we are llooking at')
+=======
+>>>>>>> a575194994225405bac77e2416a3b60752c05449
 		// Found a solution, return the path.
 		if(curCnn === destinationCNN) {
 			console.log('we made it!!!')
@@ -63,6 +72,10 @@ async function dijkstraSearch(sourceNode, destinationNode, destinationLatLng, de
 			 console.log(curNode.cnn, ' this has already been explored')
 			continue;
 		}
+<<<<<<< HEAD
+=======
+		console.log(curNode, 'this is the node we are llooking at')
+>>>>>>> a575194994225405bac77e2416a3b60752c05449
 		for(let i = 0; i < curNode.streetEdges.length; i++) {
 			let curNodeEdges = curNode.streetEdges[i];
 			let newNodeCNN;
