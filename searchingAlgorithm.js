@@ -1,127 +1,201 @@
-var cnnObjectWithCrime = require("./json/cnnObjectWithCrime.json");
+'use strict'
+var cnnObject = require("./json/cnnObjectWithCrime.json");
 var graph = require("./graph.js");
 var intersectionsObject = require("./json/intersectionsObject.json");
 var PriorityQueue = require("./priorityQueue.js");
+var request = require("request");
 
+//========================GRAB USER INPUT AND GETS CNN=======================================================
 function userInput (origin, destination){
+	if(origin.indexOf("  \\ ") !== -1){
+		origin = fixslashes(origin)
+	}
+	if(destination.indexOf("  \\ ") !== -1){
+		destination = fixslashes(destination)
+	}
 	var originCNN = intersectionsObject[origin];
 	var destinationCNN = intersectionsObject[destination];
+	console.log(originCNN, 'hdkshfjdhfjsdhfj', destinationCNN)
 	var originNode = cnnObject[originCNN];
 	var destinationNode = cnnObject[destinationCNN];
-	dijkstraSearch(originNode, destinationNode)
+	convertIntersectionLatLng(destinationNode["intersection1"])
+	.then(function(response){
+		var destinationLatLng = response;
+		dijkstraSearch(originNode, destinationNode, destinationLatLng, destinationCNN)
+	})
+	.catch(function(err){
+		console.log("this is the error from trying to get the destinationLatLng " + err)
+	})
 }
-
-
-// {"20010000":
-// {"intersection1":["JAMESTOWN AVE","GILROY ST"],
-// "intersection2":["GILROY ST","JAMESTOWN AVE"],
-// "cnn":"20010000",
-// "streetEdges":
-// [{"first":"20010000",
-// "second":"20435000",
-// "weight":1,
-// "crimeType":{}
-// }]}
-
-function dijkstraSearch(sourceNode, destinationNode) {
-	var destinationLatLng = convertIntersectionLatLng(destinationNode[intersection1])
-
-  let frontier = new PriorityQueue(); // We're assuming such a class exists.
-  let explored = new Set();
-
-  let queueObj = {
-    node: sourceNode,
-    cost: 0,
-    path = []
-  };
-
-  frontier.enqueue(queueObj, queueObj.cost);
-
-  // Search until we're out of nodes
-  while(frontier.size() > 0) {
-    let currentQueueObj = frontier.dequeue();
-    let curNode = currentQueueObj.node;
-    let curPath = currentQueueObj.path;
-    let curCost = currentQueueObj.cost;
-
-    // Found a solution, return the path.
-    if(curNode.intersection1 === destinationNode || curNode.intersection2 === destinationNode) {
-      return curPath;
-    }
-    else if(explored.has(curNode)) {
-      continue;
-    }
-
-    for(let i = 0; i < curNode.streetEdges.length; i++) {
-      let newEdgeCnn = curNode.streetEdges[i];
+userInput(("BAY ST,SCOTT ST"), ("FRANCISCO ST,BAKER ST"));
+//"BAY ST,SCOTT ST":"26990000"
+// "FRANCISCO ST,BAKER ST":"27005000"
+//========================A STAR SEARCH=======================================================
+async function dijkstraSearch(sourceNode, destinationNode, destinationLatLng, destinationCNN) {
+	let frontier = new PriorityQueue(); // We're assuming such a class exists.
+	let explored = new Set();
+	let queueObj = {
+		node: sourceNode,
+		cost: 0,
+		path: []
+	};
+	frontier.enqueue(queueObj, queueObj.cost);
+	// Search until we're out of nodes
+	while(frontier.length > 0) {
+		let currentQueueObj = frontier.dequeue();
+		let curNode = currentQueueObj['objeeee']['node'];
+		let curPath = currentQueueObj['objeeee']['path'];
+		let curCost = currentQueueObj['objeeee']['cost'];
+		//console.log(curNode['cnn'], 'is this the erro? ')
+		let curCnn = curNode.cnn;
+		// Found a solution, return the path.
+		if(curCnn === destinationCNN) {
+			console.log('we made it!!!')
+			console.log(curPath, " we made it!!!!!");
+			for (var i = 0; i < curPath; i++) {
+				array[i]
+			}
+			return curPath;
+		}
+		if(explored.has(curNode)) {
+			 console.log(curNode.cnn, ' this has already been explored')
+			continue;
+		}
+		console.log(curNode, 'this is the node we are llooking at')
+		for(let i = 0; i < curNode.streetEdges.length; i++) {
+			let curNodeEdges = curNode.streetEdges[i];
+			let newNodeCNN;
+			if(curNodeEdges.first !== curCnn){
+				newNodeCNN = curNodeEdges.first;
+			} else {
+				newNodeCNN = curNodeEdges.second;
+			}
 			let newEdgeWeight = curNode.streetEdges[i].weight;
-			let newEdge = cnnObjectWithCrime[newEdgeCnn];
-      let newPath = curPath.slice();
-      newPath.push(curNode);
+			let newNode = cnnObject[newNodeCNN];
+			let newPath = curPath.slice();
+			newPath.push(curNode);
+			try{
+				var heuristicValue = await computeHeuristic(newNode, destinationLatLng);
+			}
+			catch(err){
+				console.log(err, 'this is the err in the try catch block')
+				return;
+			}
 
-      let heuristicValue = computeHeuristic(newEdge, destinationLatLng);
+			if(heuristicValue === 'no address exsists'){
+				explored.add(newNode);
+			} else {
 
-      // We use this format so we can track the path
-      let newQueueObj = {
-        node: newEdge,
-        path: newPath,
-        cost: newEdgeWeight + curCost; // NOTE: No heuristic here -- thats correct
-      }
-
-			******************** FIGURE OUT WEIGHT TOMORROW ********************************
-
-      // We only use the heuristic as the value for the priority queue, not the 'cost'.
-      frontier.enqueue(newQueueObj, newQueueObj.cost + heuristic);
-    }
-
-    explored.add(curNode);
-  }
-
-  // No solution.
-  return null;
+				let newQueueObj = {
+					node: newNode,
+					path: newPath,
+					cost: newEdgeWeight + curCost // NOTE: No heuristic here -- thats correct
+				}
+				frontier.enqueue(newQueueObj, newQueueObj.cost + heuristicValue);
+			}
+		}
+		// console.log(curNode.cnn)
+		explored.add(curNode);
+	}
+	console.log('not working, fix it')
+	return 'not working, fix it';
 }
 
+//========================COMPUTES THE HEURISTIC=======================================================
 function computeHeuristic(currNode, finalLatLong){
-	var currNodeLatLong = convertIntersectionLatLng(currNode[intersection1]);
-	var distance = latLngDistance(currNodeLatLong, finalLatLong);
-	return distance;
+	var currNodeIntersection = currNode["intersection1"]
+	if(currNodeIntersection.indexOf("  \\ ") !== -1){
+		currNodeIntersection = fixslashes(currNodeIntersection)
+	}
+	return convertIntersectionLatLng(currNodeIntersection)
+	.then(function(response){
+		if(response === 'no address exsists'){
+			return 'no address exsists'
+		} else {
+			var currNodeLatLong = response
+			var distance = latLngDistance(currNodeLatLong, finalLatLong);
+			return distance;
+		}
+	})
+	.catch(function(err){
+		console.log(err, ' this is the error in computeHeuristic')
+		return err
+	})
 }
 
+//========================CONVERT INTERSECTION TO LAT LONG=======================================================
 function convertIntersectionLatLng(intersectionArray){
+	var firstStreet;
+	var secondStreet;
 	// ["JAMESTOWN AVE","GILROY ST"],
-  var firstStreet = intersectionArray[0].split(" ").join("+");
-	var secondStreet = intersectionArray[1].split(" ").join("+");
-
-  // console.log("IDX " + slashIdx)
-  // console.log("2nd " + secondStreet)
-  let p = new Promise(function(resolve, reject){
-    request("https://maps.googleapis.com/maps/api/geocode/json?address=" + firstStreet + "+and+" + secondStreet + ",+San+Francisco,+CA" + "&key=AIzaSyC9FPqo6Pdx4VjALRx5oeEDhfQvb-fkDjE", function (error, response, body) {
-      if (!error && response.statusCode == 200) {
-        var parsed = JSON.parse(body);
-        resolve(parsed["results"][0]["geometry"]["location"]);
-      } else {
-        reject(err)
-      }
-    });
-  });
-  return p;
+	if(intersectionArray[0].indexOf(" \\ ") !== -1 || intersectionArray[1].indexOf(" \\ ") !== -1 ){
+		var currNodeIntersection = fixslashes(intersectionArray)
+		//KIRKWOOD AVE,DORMITORY RD
+		var newArr = currNodeIntersection.split(',')
+		firstStreet = newArr[0].split(" ").join("+");
+		secondStreet = newArr[1].split(" ").join("+");
+	} else {
+		firstStreet = intersectionArray[0].split(" ").join("+");
+		secondStreet = intersectionArray[1].split(" ").join("+");
+	}
+	let p;
+	// console.log("IDX " + slashIdx)
+	// console.log("2nd " + secondStreet)
+	return p = new Promise(function(resolve, reject){
+		request("https://maps.googleapis.com/maps/api/geocode/json?address=" + firstStreet + "+and+" + secondStreet + ",+San+Francisco,+CA" + "&key=AIzaSyC9FPqo6Pdx4VjALRx5oeEDhfQvb-fkDjE", function (error, response, body) {
+			if (!error && response.statusCode == 200) {
+				var parsed = JSON.parse(body);
+				// console.log(parsed, 'this is the results')
+				if(parsed["status"] === 'ZERO_RESULTS'){
+					// console.log('the ' + intersectionArray + ' does not exisits')
+					resolve('no address exsists')
+				} else {
+					// console.log('this intersction does exsisit ', parsed["results"][0]["geometry"]["location"])
+					resolve(parsed["results"][0]["geometry"]["location"]);
+				}
+				// console.log(parsed["results"][0], " parsed ASDFASDFASDF", intersectionArray, "Intersection Array")
+			} else {
+				reject(err)
+			}
+		});
+	});
+	// console.log(p, " this is P");
+	// return p;
 }
 
+//========================GETS DISTANCE BETWEEN TWO LAT LONG POINTS===================================================
 function latLngDistance(currNodeLatLong, finalLatLong, unit = "K") {
-		lat1 = currNodeLatLong.lat;
-		lon1 = currNodeLatLong.lng;
-		lat2 = finalLatLong.lat;
-		lon2 = finalLatLong.lng;
+	var lat1 = currNodeLatLong.lat;
+	var lon1 = currNodeLatLong.lng;
+	var lat2 = finalLatLong.lat;
+	var lon2 = finalLatLong.lng;
+	var radlat1 = Math.PI * lat1/180;
+	var radlat2 = Math.PI * lat2/180;
+	var theta = lon1-lon2;
+	var radtheta = Math.PI * theta/180;
+	var dist = Math.sin(radlat1) * Math.sin(radlat2) + Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
+	dist = Math.acos(dist);
+	dist = dist * 180/Math.PI;
+	dist = dist * 60 * 1.1515;
+	if (unit=="K") {dist = dist * 1.609344};
+	if (unit=="N") {dist = dist * 0.8684};
+	return dist;
+}
 
-    var radlat1 = Math.PI * lat1/180
-    var radlat2 = Math.PI * lat2/180
-    var theta = lon1-lon2
-    var radtheta = Math.PI * theta/180
-    var dist = Math.sin(radlat1) * Math.sin(radlat2) + Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
-    dist = Math.acos(dist)
-    dist = dist * 180/Math.PI
-    dist = dist * 60 * 1.1515
-    if (unit=="K") { dist = dist * 1.609344 }
-    if (unit=="N") { dist = dist * 0.8684 }
-    return dist
+//========================REMOVES LSAHSES FROM INTERSECTION======================================================
+function fixslashes(arr){
+	//"03RD ST,KEARNY ST \\ MARKET ST"
+	// console.log(arr, 'this is the arr')
+
+	if(arr[0].indexOf(' \\ ') !== -1){
+		//console.log('herehe now', arr[0])
+		var newStreet = arr[0].split(' \\')[0]
+		//console.log(newStreet, 'hereeeeer newstreet1')
+		return newStreet+','+arr[1]
+
+	} else {
+		var newStreet2 = arr[1].split(' \\')[0]
+		//console.log(newStreet2, 'hereeeer newstreet2')
+		return arr[0]+','+newStreet2
+	}
 }
