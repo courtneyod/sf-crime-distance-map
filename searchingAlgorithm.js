@@ -1,5 +1,5 @@
 'use strict'
-var cnnObject = require("./json/cnnObjectWithCrime.json");
+var cnnObject = require("./json/cnnObjectWithCrimeAndCorrectEdges.json");
 var graph = require("./graph.js");
 var intersectionsObject = require("./json/intersectionsObject.json");
 var PriorityQueue = require("./priorityQueue.js");
@@ -27,7 +27,7 @@ function userInput (origin, destination){
 		console.log("this is the error from trying to get the destinationLatLng " + err)
 	})
 }
-userInput(("BAY ST,SCOTT ST"), ("FRANCISCO ST,BAKER ST"));
+userInput(('CAPRA WAY,SCOTT ST'), ("FRANCISCO ST,BAKER ST"));
 //"BAY ST,SCOTT ST":"26990000"
 // "FRANCISCO ST,BAKER ST":"27005000"
 //========================A STAR SEARCH=======================================================
