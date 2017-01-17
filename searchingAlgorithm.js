@@ -31,7 +31,7 @@ function userInput (origin, destination){
 	})
 }
 
-userInput(('STONE ST,LINCOLN BLVD'), ('ARMISTEAD RD,HOFFMAN ST'));
+userInput(('CAPRA WAY,SCOTT ST'), ("FRANCISCO ST,BAKER ST"));
 
 //========================A STAR SEARCH=======================================================
 async function dijkstraSearch(sourceNode, destinationNode, destinationLatLng, destinationCNN) {
