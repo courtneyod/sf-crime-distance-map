@@ -2,8 +2,6 @@ var streetNode = require("./json/streetDataSource.json");
 var fs = require("fs");
 var graph = require("./graph.js");
 var streetData = streetNode.data;
-
-
 // const __apiKey__ = AIzaSyC9FPqo6Pdx4VjALRx5oeEDhfQvb-fkDjE
 var request = require('request');
 

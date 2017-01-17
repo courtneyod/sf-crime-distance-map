@@ -33,6 +33,7 @@ function userInput (origin, destination){
 
 userInput(('CAPRA WAY,SCOTT ST'), ("FRANCISCO ST,BAKER ST"));
 
+
 //========================A STAR SEARCH=======================================================
 async function dijkstraSearch(sourceNode, destinationNode, destinationLatLng, destinationCNN) {
 	let frontier = new PriorityQueue(); // We're assuming such a class exists.
