@@ -6,8 +6,8 @@ Built a graph representation of San Francisco street intersections and crime, th
 
 **Data**
 Process street intersection data and crime data to be in a graph format from SFOpenData:
- - [crime data](https://data.sfgov.org/Public-Safety/SFPD-Incidents-Current-Year-2016-/9v2m-8wqu). The crime data lists the crime type along with the intersection or block number it occurred on. Screen shot of [data](https://github.com/courtneyod/sf-crime-distance-map/blob/master/images/crimedata.png)
- - [street intersection data](https://data.sfgov.org/Geographic-Locations-and-Boundaries/List-of-Streets-and-Intersections/pu5n-qu5c). The street data lists intersections and connecting intersection. Screen shot of [data](https://github.com/courtneyod/sf-crime-distance-map/blob/master/images/street-intersection.png)
+ - [crime data](https://data.sfgov.org/Public-Safety/SFPD-Incidents-Current-Year-2016-/9v2m-8wqu). The crime data lists the crime type along with the intersection or block number it occurred on. Screen shot of ![data](https://github.com/courtneyod/sf-crime-distance-map/blob/master/images/crimedata.png)
+ - [street intersection data](https://data.sfgov.org/Geographic-Locations-and-Boundaries/List-of-Streets-and-Intersections/pu5n-qu5c). The street data lists intersections and connecting intersection. Screen shot of ![data](https://github.com/courtneyod/sf-crime-distance-map/blob/master/images/street-intersection.png)
 
 Implemented graph and translated street data into graph nodes and connecting intersections into graph edges.
 
