@@ -4,21 +4,24 @@ var graph = require("./graph.js");
 var intersectionsObject = require("./json/intersectionsObject.json");
 var PriorityQueue = require("./priorityQueue.js");
 var request = require("request");
+var getLatLng = require("./getLatLng.js");
+var latLngObject = require("./json/latLngObject");
 
 //========================GRAB USER INPUT AND GETS CNN=======================================================
 function userInput (origin, destination){
 	if(origin.indexOf("  \\ ") !== -1){
-		origin = fixslashes(origin)
+		origin = fixSlashes(origin)
 	}
 	if(destination.indexOf("  \\ ") !== -1){
-		destination = fixslashes(destination)
+		destination = fixSlashes(destination)
 	}
 	var originCNN = intersectionsObject[origin];
 	var destinationCNN = intersectionsObject[destination];
 	console.log(originCNN, 'hdkshfjdhfjsdhfj', destinationCNN)
 	var originNode = cnnObject[originCNN];
 	var destinationNode = cnnObject[destinationCNN];
-	convertIntersectionLatLng(destinationNode["intersection1"])
+	// console.log(destinationNode, "THIS IS THE DESTINATION NODE")
+	getLatLng(destinationNode["intersection1"])
 	.then(function(response){
 		var destinationLatLng = response;
 		dijkstraSearch(originNode, destinationNode, destinationLatLng, destinationCNN)
@@ -28,10 +31,8 @@ function userInput (origin, destination){
 	})
 }
 
-userInput(("PIERCE ST,CAPRA WAY"), ("FRANCISCO ST,BAKER ST"));
-//"BAY ST,SCOTT ST":"26990000"
-// "FRANCISCO ST,BAKER ST":"27005000"
-// "26982000":"PIERCE ST,CAPRA WAY"
+userInput(('CAPRA WAY,SCOTT ST'), ("FRANCISCO ST,BAKER ST"));
+
 
 //========================A STAR SEARCH=======================================================
 async function dijkstraSearch(sourceNode, destinationNode, destinationLatLng, destinationCNN) {
@@ -107,65 +108,71 @@ async function dijkstraSearch(sourceNode, destinationNode, destinationLatLng, de
 
 //========================COMPUTES THE HEURISTIC=======================================================
 function computeHeuristic(currNode, finalLatLong){
+	var cnn = currNode["cnn"];
 	var currNodeIntersection = currNode["intersection1"]
 	if(currNodeIntersection.indexOf("  \\ ") !== -1){
-		currNodeIntersection = fixslashes(currNodeIntersection)
+		currNodeIntersection = fixSlashes(currNodeIntersection)
 	}
-	return convertIntersectionLatLng(currNodeIntersection)
-	.then(function(response){
-		if(response === 'no address exsists'){
-			return 'no address exsists'
-		} else {
-			var currNodeLatLong = response
-			var distance = latLngDistance(currNodeLatLong, finalLatLong);
-			return distance;
-		}
-	})
-	.catch(function(err){
-		console.log(err, ' this is the error in computeHeuristic')
-		return err
-	})
+	if(latLngObject[cnn]){
+		return latLngObject[cnn];
+	} else {
+		return getLatLng(currNodeIntersection)
+		.then(function(response){
+			if(response === 'no address exsists'){
+				return 'no address exsists'
+			} else {
+				var currNodeLatLong = response
+				var distance = latLngDistance(currNodeLatLong, finalLatLong);
+				return distance;
+			}
+		})
+		.catch(function(err){
+			console.log(err, ' this is the error in computeHeuristic')
+			return err
+		})
+	}
 }
 
-//========================CONVERT INTERSECTION TO LAT LONG=======================================================
-function convertIntersectionLatLng(intersectionArray){
-	var firstStreet;
-	var secondStreet;
-	// ["JAMESTOWN AVE","GILROY ST"],
-	if(intersectionArray[0].indexOf(" \\ ") !== -1 || intersectionArray[1].indexOf(" \\ ") !== -1 ){
-		var currNodeIntersection = fixslashes(intersectionArray)
-		//KIRKWOOD AVE,DORMITORY RD
-		var newArr = currNodeIntersection.split(',')
-		firstStreet = newArr[0].split(" ").join("+");
-		secondStreet = newArr[1].split(" ").join("+");
-	} else {
-		firstStreet = intersectionArray[0].split(" ").join("+");
-		secondStreet = intersectionArray[1].split(" ").join("+");
-	}
-	let p;
-	// console.log("IDX " + slashIdx)
-	// console.log("2nd " + secondStreet)
-	return p = new Promise(function(resolve, reject){
-		request("https://maps.googleapis.com/maps/api/geocode/json?address=" + firstStreet + "+and+" + secondStreet + ",+San+Francisco,+CA" + "&key=AIzaSyC9FPqo6Pdx4VjALRx5oeEDhfQvb-fkDjE", function (error, response, body) {
-			if (!error && response.statusCode == 200) {
-				var parsed = JSON.parse(body);
-				// console.log(parsed, 'this is the results')
-				if(parsed["status"] === 'ZERO_RESULTS'){
-					// console.log('the ' + intersectionArray + ' does not exisits')
-					resolve('no address exsists')
-				} else {
-					// console.log('this intersction does exsisit ', parsed["results"][0]["geometry"]["location"])
-					resolve(parsed["results"][0]["geometry"]["location"]);
-				}
-				// console.log(parsed["results"][0], " parsed ASDFASDFASDF", intersectionArray, "Intersection Array")
-			} else {
-				reject(err)
-			}
-		});
-	});
-	// console.log(p, " this is P");
-	// return p;
-}
+
+// //========================CONVERT INTERSECTION TO LAT LONG=======================================================
+// function convertIntersectionLatLng(intersectionArray){
+// 	var firstStreet;
+// 	var secondStreet;
+// 	// ["JAMESTOWN AVE","GILROY ST"],
+// 	if(intersectionArray[0].indexOf(" \\ ") !== -1 || intersectionArray[1].indexOf(" \\ ") !== -1 ){
+// 		var currNodeIntersection = fixSlashes(intersectionArray)
+// 		//KIRKWOOD AVE,DORMITORY RD
+// 		var newArr = currNodeIntersection.split(',')
+// 		firstStreet = newArr[0].split(" ").join("+");
+// 		secondStreet = newArr[1].split(" ").join("+");
+// 	} else {
+// 		firstStreet = intersectionArray[0].split(" ").join("+");
+// 		secondStreet = intersectionArray[1].split(" ").join("+");
+// 	}
+// 	let p;
+// 	// console.log("IDX " + slashIdx)
+// 	// console.log("2nd " + secondStreet)
+// 	return p = new Promise(function(resolve, reject){
+// 		request("https://maps.googleapis.com/maps/api/geocode/json?address=" + firstStreet + "+and+" + secondStreet + ",+San+Francisco,+CA" + "&key=AIzaSyC9FPqo6Pdx4VjALRx5oeEDhfQvb-fkDjE", function (error, response, body) {
+// 			if (!error && response.statusCode == 200) {
+// 				var parsed = JSON.parse(body);
+// 				// console.log(parsed, 'this is the results')
+// 				if(parsed["status"] === 'ZERO_RESULTS'){
+// 					// console.log('the ' + intersectionArray + ' does not exisits')
+// 					resolve('no address exsists')
+// 				} else {
+// 					// console.log('this intersction does exsisit ', parsed["results"][0]["geometry"]["location"])
+// 					resolve(parsed["results"][0]["geometry"]["location"]);
+// 				}
+// 				// console.log(parsed["results"][0], " parsed ASDFASDFASDF", intersectionArray, "Intersection Array")
+// 			} else {
+// 				reject(err)
+// 			}
+// 		});
+// 	});
+// 	// console.log(p, " this is P");
+// 	// return p;
+// }
 
 //========================GETS DISTANCE BETWEEN TWO LAT LONG POINTS===================================================
 function latLngDistance(currNodeLatLong, finalLatLong, unit = "K") {
@@ -186,8 +193,9 @@ function latLngDistance(currNodeLatLong, finalLatLong, unit = "K") {
 	return dist;
 }
 
+
 //========================REMOVES LSAHSES FROM INTERSECTION======================================================
-function fixslashes(arr){
+function fixSlashes(arr){
 	//"03RD ST,KEARNY ST \\ MARKET ST"
 	// console.log(arr, 'this is the arr')
 
@@ -203,3 +211,5 @@ function fixslashes(arr){
 		return arr[0]+','+newStreet2
 	}
 }
+
+module.exports = {fixSlashes} ;
