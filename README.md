@@ -1,8 +1,8 @@
-# The Safeway
+#The Safeway
 
 **About**
 
-Built a graph representation of San Francisco street intersections and crime, then used A* to traverse the graph of street intersections in SF. The graph uses variable edge weights based on crime severity and the distance between each node.
+Built a graph representation of San Francisco street intersections and crime, then used A* to traverse the graph of street intersections in SF. The graph uses variable edge weights based on crime severity and the distance between each node. (Note: there is no frontend for this project)
 
 **Data**
 Process street intersection data and crime data to be in a graph format from SFOpenData:
